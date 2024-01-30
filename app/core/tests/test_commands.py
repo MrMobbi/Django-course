@@ -18,7 +18,15 @@ class CommandTests(SimpleTestCase):
         """Test waiting for database if database ready."""
 
         patched_check.return_value = True
-
         call_command('wait_for_db')
-
         patched_check.assert_called_once_with(database=['default'])
+
+    @patch('time.sleep')
+    def test_wait_for_db_delay(self, patched_sleep, patched_check):
+        """Test waiting for databases when getting OperationalError"""
+
+        patched_check.side_effect = [Psycopg2Error] * 2 + \
+            [OperationalError] * 3 + [True]
+
+        self.assertEqual(patched_check.call_count, 6)
+        patched_check.assert_called_with(database=['default'])
