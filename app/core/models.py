@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
-    PermissionMixin,
+    PermissionsMixin,
 )
 
 
@@ -17,7 +17,7 @@ class UserManager(BaseUserManager):
         """Create, save and return a new user."""
         user = self.model(email=email, **extra_field)
         user.set_password(password)
-        user.save(using=self.db)
+        user.save(using=self._db)
 
         return (user)
 
@@ -26,10 +26,10 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionMixin):
     """User in the system."""
     email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255,)
+    name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    object = UserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'
