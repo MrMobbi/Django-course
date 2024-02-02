@@ -1,9 +1,6 @@
 up:
 	docker compose up --build -d
 
-flake:
-	docker compose run --rm app sh -c "flake8"
-
 build:
 	docker compose build
 
@@ -21,6 +18,8 @@ clean: down
 
 fclean: clean
 	docker volume ls -q | grep dev-db-data | xargs --no-run-if-empty docker volume rm
+
+re: clean up
 
 ls:
 	docker compose images
